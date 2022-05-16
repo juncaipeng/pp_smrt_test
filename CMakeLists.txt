@@ -30,6 +30,11 @@ if(WITH_GPU)
   endif()
 endif()
 
+include(cmake/yaml-cpp.cmake)
+include_directories("${CMAKE_SOURCE_DIR}/")
+include_directories("${CMAKE_CURRENT_BINARY_DIR}/ext/yaml-cpp/src/ext-yaml-cpp/include")
+link_directories("${CMAKE_CURRENT_BINARY_DIR}/ext/yaml-cpp/lib")
+
 
 if(NOT WITH_STATIC_LIB)
   add_definitions("-DPADDLE_WITH_SHARED_LIB")
@@ -152,12 +157,12 @@ if (NOT WIN32)
   set(EXTERNAL_LIB "-lrt -ldl -lpthread")
   set(DEPS ${DEPS}
       ${MATH_LIB} ${MKLDNN_LIB}
-      glog gflags protobuf xxhash cryptopp
+      glog gflags protobuf xxhash cryptopp yaml-cpp
       ${EXTERNAL_LIB})
 else()
   set(DEPS ${DEPS}
       ${MATH_LIB} ${MKLDNN_LIB}
-      glog gflags_static libprotobuf xxhash cryptopp-static ${EXTERNAL_LIB})
+      glog gflags_static libprotobuf xxhash cryptopp-static libyaml-cppmt ${EXTERNAL_LIB})
   set(DEPS ${DEPS} shlwapi.lib)
 endif(NOT WIN32)
 
@@ -188,10 +193,11 @@ if(WITH_ROCM)
   endif()
 endif()
 
-find_package(yaml-cpp REQUIRED)
-include_directories(${YAML_CPP_INCLUDE_DIRS})
-link_directories(${YAML_CPP_LIBRARIES})
-set(DEPS ${DEPS} "-lyaml-cpp")
+#find_package(yaml-cpp REQUIRED)
+#include_directories(${YAML_CPP_INCLUDE_DIRS})
+#link_directories(${YAML_CPP_LIBRARIES})
+#set(DEPS ${DEPS} "-lyaml-cpp")
+
 
 find_package(OpenCV REQUIRED)
 include_directories(${OpenCV_INCLUDE_DIRS})
@@ -201,6 +207,7 @@ set(DEPS ${DEPS} ${OpenCV_LIBS})
 include_directories(src)
 
 add_executable(${DEMO_NAME} src/${DEMO_NAME}.cc src/common.cc)
+ADD_DEPENDENCIES(${DEMO_NAME} ext-yaml-cpp)
 target_link_libraries(${DEMO_NAME} ${DEPS})
 
 if(WIN32)
