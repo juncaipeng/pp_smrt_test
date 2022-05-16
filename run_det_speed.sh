@@ -10,7 +10,10 @@ DEMO_NAME=test_det
 
 work_path=$(dirname $(readlink -f $0))
 paddle_root="${work_path}/paddle_inference"       # the root path of Paddle Inference lib
+cuda_root="/usr/local/cuda/lib64"
 tensorrt_root="${work_path}/TensorRT-7.1.3.4/" # the root path of TensorRT lib
+opencv_root="/usr/local/opencv3"
+
 
 model_dir='infer_models_det'      # the dir of det inference models
 device=GPU                        # run on GPU or CPU
@@ -47,7 +50,7 @@ echo "| model | preprocess time (ms) | run time (ms) |"  >> ${save_path}
 # 2. compile
 mkdir -p build_det
 cd build_det
-rm -rf *
+#rm -rf *
 
 cmake .. \
   -DDEMO_NAME=${DEMO_NAME} \
@@ -56,7 +59,9 @@ cmake .. \
   -DUSE_TENSORRT=${USE_TENSORRT} \
   -DWITH_STATIC_LIB=OFF \
   -DPADDLE_LIB=${paddle_root} \
-  -DTENSORRT_ROOT=${tensorrt_root}
+  -DCUDA_LIB=${cuda_root} \
+  -DTENSORRT_ROOT=${tensorrt_root} \
+  -DOPENCV_ROOT=${opencv_root}
 
 make -j
 

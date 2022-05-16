@@ -10,8 +10,8 @@ option(WITH_ROCM "Compile demo with rocm." OFF)
 SET(DEMO_NAME "" CACHE STRING "The demo name")
 SET(PADDLE_LIB "" CACHE PATH "Location of paddleinference libraries")
 SET(CUDA_LIB "" CACHE PATH "Location of CUDA libraries")
-SET(TENSORRT_ROOT "" CACHE STRING "The root directory of TensorRT library")
-SET(OPENCV_ROOT "" CACHE STRING "The root directory of Opencv library")
+SET(TENSORRT_ROOT "" CACHE PATH "The root directory of TensorRT library")
+SET(OPENCV_ROOT "" CACHE PATH "The root directory of Opencv library")
 
 # check
 if(DEMO_NAME STREQUAL "")

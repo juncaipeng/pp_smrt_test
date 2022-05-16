@@ -10,7 +10,7 @@ DEMO_NAME=test_seg
 
 work_path=$(dirname $(readlink -f $0))
 paddle_root="${work_path}/paddle_inference"       # the root path of Paddle Inference lib
-cuda_root="${work_path}/cuda10.2/lib64"
+cuda_root="/usr/local/cuda/lib64"
 tensorrt_root="${work_path}/TensorRT-7.1.3.4/"  # the root path of TensorRT lib
 opencv_root="/usr/local/opencv3"
 
