@@ -12,6 +12,7 @@ work_path=$(dirname $(readlink -f $0))
 paddle_root="${work_path}/paddle_inference"       # the root path of Paddle Inference lib
 cuda_root="${work_path}/cuda10.2/lib64"
 tensorrt_root="${work_path}/TensorRT-7.1.3.4/"  # the root path of TensorRT lib
+opencv_root="/usr/local/opencv3"
 
 model_dir='infer_models_seg'    # the dir of seg inference models
 target_width=512                # the width of resized image, which is the input of inference model
@@ -57,7 +58,7 @@ echo "| model | preprocess time (ms) | run time (ms) |"  >> ${save_path}
 # 2. compile
 mkdir -p build_seg
 cd build_seg
-rm -rf *
+#rm -rf *
 
 cmake .. \
   -DDEMO_NAME=${DEMO_NAME} \
@@ -67,7 +68,8 @@ cmake .. \
   -DWITH_STATIC_LIB=OFF \
   -DPADDLE_LIB=${paddle_root} \
   -DCUDA_LIB=${cuda_root} \
-  -DTENSORRT_ROOT=${tensorrt_root}
+  -DTENSORRT_ROOT=${tensorrt_root} \
+  -DOPENCV_ROOT=${opencv_root}
 
 make -j
 

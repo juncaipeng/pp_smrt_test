@@ -11,6 +11,7 @@ SET(DEMO_NAME "" CACHE STRING "The demo name")
 SET(PADDLE_LIB "" CACHE PATH "Location of paddleinference libraries")
 SET(CUDA_LIB "" CACHE PATH "Location of CUDA libraries")
 SET(TENSORRT_ROOT "" CACHE STRING "The root directory of TensorRT library")
+SET(OPENCV_ROOT "" CACHE STRING "The root directory of Opencv library")
 
 # check
 if(DEMO_NAME STREQUAL "")
@@ -29,12 +30,21 @@ if(WITH_GPU)
     endif()
   endif()
 endif()
+if(OPENCV_ROOT STREQUAL "")
+    message(FATAL_ERROR "please set OPENCV_LIB with -DOPENCV_LIB=/path/opencv")
+endif()
 
 include(cmake/yaml-cpp.cmake)
 include_directories("${CMAKE_SOURCE_DIR}/")
 include_directories("${CMAKE_CURRENT_BINARY_DIR}/ext/yaml-cpp/src/ext-yaml-cpp/include")
 link_directories("${CMAKE_CURRENT_BINARY_DIR}/ext/yaml-cpp/lib")
 
+if (WIN32)
+    find_package(OpenCV REQUIRED PATHS ${OPENCV_ROOT}/build/ NO_DEFAULT_PATH)
+else()
+    find_package(OpenCV REQUIRED PATHS ${OPENCV_ROOT}/share/OpenCV NO_DEFAULT_PATH)
+endif()
+include_directories(${OpenCV_INCLUDE_DIRS})
 
 if(NOT WITH_STATIC_LIB)
   add_definitions("-DPADDLE_WITH_SHARED_LIB")
@@ -157,12 +167,12 @@ if (NOT WIN32)
   set(EXTERNAL_LIB "-lrt -ldl -lpthread")
   set(DEPS ${DEPS}
       ${MATH_LIB} ${MKLDNN_LIB}
-      glog gflags protobuf xxhash cryptopp yaml-cpp
+      glog gflags protobuf xxhash cryptopp yaml-cpp ${OpenCV_LIBS}
       ${EXTERNAL_LIB})
 else()
   set(DEPS ${DEPS}
       ${MATH_LIB} ${MKLDNN_LIB}
-      glog gflags_static libprotobuf xxhash cryptopp-static libyaml-cppmt ${EXTERNAL_LIB})
+      glog gflags_static libprotobuf xxhash cryptopp-static libyaml-cppmt ${OpenCV_LIBS} ${EXTERNAL_LIB})
   set(DEPS ${DEPS} shlwapi.lib)
 endif(NOT WIN32)
 
@@ -199,10 +209,10 @@ endif()
 #set(DEPS ${DEPS} "-lyaml-cpp")
 
 
-find_package(OpenCV REQUIRED)
-include_directories(${OpenCV_INCLUDE_DIRS})
-link_directories(${OpenCV_CPP_LIBRARIES})
-set(DEPS ${DEPS} ${OpenCV_LIBS})
+#find_package(OpenCV REQUIRED)
+#include_directories(${OpenCV_INCLUDE_DIRS})
+#link_directories(${OpenCV_CPP_LIBRARIES})
+#set(DEPS ${DEPS} ${OpenCV_LIBS})
 
 include_directories(src)
 
