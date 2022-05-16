@@ -10,7 +10,7 @@ DEMO_NAME=test_det
 
 work_path=$(dirname $(readlink -f $0))
 paddle_root="${work_path}/paddle_inference"       # the root path of Paddle Inference lib
-tensorrt_root='/work/download/TensorRT-7.1.3.4/'  # the root path of TensorRT lib
+tensorrt_root="${work_path}/TensorRT-7.1.3.4/" # the root path of TensorRT lib
 
 model_dir='infer_models_det'      # the dir of det inference models
 device=GPU                        # run on GPU or CPU
@@ -23,12 +23,18 @@ warmup_iters=30
 run_iters=50
 save_path="res_det.txt"
 
+gpu_id=0
+gpu_name=""
+export CUDA_VISIBLE_DEVICES=${gpu_id}
+
 if [ ! -f "det_img.jpg" ]; then
  wget https://paddledet.bj.bcebos.com/data/demo_imgs/det_img.jpg
 fi
 
 echo "\n---Config Info---" >> ${save_path}
 echo "device: ${device}" >> ${save_path}
+echo "gpu_id: ${gpu_id}" >> ${save_path}
+echo "gpu_name: ${gpu_name}" >> ${save_path}
 echo "use_trt: ${use_trt}" >> ${save_path}
 echo "trt_precision: ${trt_precision}" >> ${save_path}
 echo "use_trt_dynamic_shape: ${use_trt_dynamic_shape}" >> ${save_path}
