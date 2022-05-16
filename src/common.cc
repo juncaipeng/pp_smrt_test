@@ -1,4 +1,3 @@
-#include <sys/time.h>
 #include <algorithm>
 #include <chrono>
 #include <iostream>
@@ -12,12 +11,13 @@
 #include "common.h"
 
 void Time::start() {
-    gettimeofday(&_start_time, NULL);
+    _start_time = std::chrono::steady_clock::now();
 }
 
 void Time::stop() {
-    gettimeofday(&_end_time, NULL);
-    _used_time += (_end_time.tv_sec - _start_time.tv_sec) * 1000.0 + (double)(_end_time.tv_usec - _start_time.tv_usec) / 1000.0;
+    _end_time = std::chrono::steady_clock::now();
+    std::chrono::duration<double> diff = _end_time - _start_time;
+    _used_time += diff.count() * 1000;
 }
 
 void Time::clear() {
@@ -44,6 +44,11 @@ void hwc_2_chw_data(const cv::Mat& hwc_img, float* data) {
 }
 
 bool file_exists(const std::string& path) {
-  struct stat buffer;
-  return (stat(path.c_str(), &buffer) == 0);
+#ifdef _WIN32
+    struct _stat buffer;
+    return (_stat(path.c_str(), &buffer) == 0);
+#else
+    struct stat buffer;
+    return (stat(path.c_str(), &buffer) == 0);
+#endif  // !_WIN32
 }

@@ -1,4 +1,3 @@
-#include <sys/time.h>
 #include <algorithm>
 #include <chrono>
 #include <iostream>
@@ -6,8 +5,19 @@
 #include <sstream>
 #include <numeric>
 
+#ifdef _WIN32
+#include <direct.h>
+#include <io.h>
+#else
 #include <stdarg.h>
 #include <sys/stat.h>
+#endif
+
+#ifdef _WIN32
+#define OS_PATH_SEP "\\"
+#else
+#define OS_PATH_SEP "/"
+#endif
 
 #include "opencv2/core.hpp"
 #include "opencv2/imgproc.hpp"
@@ -17,8 +27,8 @@
 
 class Time {
 private:
-  struct timeval _start_time;
-  struct timeval _end_time;
+  std::chrono::time_point<std::chrono::steady_clock> _start_time;
+  std::chrono::time_point<std::chrono::steady_clock> _end_time;
   double _used_time;
 
 public:

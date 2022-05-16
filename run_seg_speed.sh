@@ -10,6 +10,7 @@ DEMO_NAME=test_seg
 
 work_path=$(dirname $(readlink -f $0))
 paddle_root="${work_path}/paddle_inference"       # the root path of Paddle Inference lib
+cuda_root="${work_path}/cuda10.2/lib64"
 tensorrt_root="${work_path}/TensorRT-7.1.3.4/"  # the root path of TensorRT lib
 
 model_dir='infer_models_seg'    # the dir of seg inference models
@@ -65,6 +66,7 @@ cmake .. \
   -DUSE_TENSORRT=${USE_TENSORRT} \
   -DWITH_STATIC_LIB=OFF \
   -DPADDLE_LIB=${paddle_root} \
+  -DCUDA_LIB=${cuda_root} \
   -DTENSORRT_ROOT=${tensorrt_root}
 
 make -j

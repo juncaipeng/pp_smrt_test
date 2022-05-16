@@ -223,8 +223,8 @@ void pre_process_image(cv::Mat img, const YamlConfig& yaml_cfg, DetInput& det_in
 
 void auto_tune(const Args& args, const YamlConfig& yaml_cfg) {
   paddle_infer::Config infer_config;
-  infer_config.SetModel(args.model_dir + "/model.pdmodel",
-                  args.model_dir + "/model.pdiparams");
+  infer_config.SetModel(args.model_dir + OS_PATH_SEP + "model.pdmodel",
+                  args.model_dir + OS_PATH_SEP + "model.pdiparams");
   infer_config.EnableUseGpu(100, 0);
   infer_config.EnableTensorRtEngine(1 << 10, 1, 3,
           paddle_infer::PrecisionType::kFloat32, false, false);
@@ -265,8 +265,8 @@ void auto_tune(const Args& args, const YamlConfig& yaml_cfg) {
 
 std::shared_ptr<paddle_infer::Predictor> create_predictor(const Args& args, const YamlConfig& yaml_cfg) {
   paddle_infer::Config infer_config;
-  infer_config.SetModel(args.model_dir + "/model.pdmodel",
-                  args.model_dir + "/model.pdiparams");
+  infer_config.SetModel(args.model_dir + OS_PATH_SEP + "model.pdmodel",
+                  args.model_dir + OS_PATH_SEP + "model.pdiparams");
   infer_config.EnableMemoryOptim();
   infer_config.DisableGlogInfo();
 
@@ -406,7 +406,7 @@ int main(int argc, char *argv[]) {
   args.save_path = FLAGS_save_path;
 
   // Load yaml
-  YamlConfig yaml_cfg = load_yaml(args.model_dir + "/infer_cfg.yml");
+  YamlConfig yaml_cfg = load_yaml(args.model_dir + OS_PATH_SEP + "infer_cfg.yml");
   yaml_cfg.show();
 
   if (args.device == "GPU" && args.use_trt && (args.use_trt_dynamic_shape || yaml_cfg.use_dynamic_shape) && args.use_trt_auto_tune) {
@@ -431,7 +431,7 @@ int main(int argc, char *argv[]) {
   LOG(INFO) << "Avg preprocess time: " << pre_time.used_time() / args.run_iters << " ms";
   LOG(INFO) << "Avg run time: " << run_time.used_time() / args.run_iters << " ms";
 
-  std::size_t found = args.model_dir.find_last_of("/\\");
+  std::size_t found = args.model_dir.find_last_of(OS_PATH_SEP);
   std::string model_name = args.model_dir.substr(found + 1);
   std::ofstream ofs(args.save_path, std::ios::out | std::ios::app);
   ofs << "| " << model_name << " | " << pre_time.used_time() / args.run_iters
