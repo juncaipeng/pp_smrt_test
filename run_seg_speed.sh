@@ -27,7 +27,7 @@ save_path="res_seg.txt"
 
 gpu_id=0
 gpu_name=""
-export CUDA_VISIBLE_DEVICES=${gpu_id}
+#export CUDA_VISIBLE_DEVICES=${gpu_id}
 
 if [ ! -f "cityscapes_demo.png" ]; then
   wget https://paddleseg.bj.bcebos.com/dygraph/demo/cityscapes_demo.png
@@ -52,7 +52,7 @@ echo "use_trt_auto_tune: ${use_trt_auto_tune}" >> ${save_path}
 echo "warmup_iters: ${warmup_iters}" >> ${save_path}
 echo "run_iters: ${run_iters}" >> ${save_path}
 
-echo "| model | preprocess time (ms) | run time (ms) |"  >> ${save_path}
+echo "| model | preprocess time (ms) | run time (ms) | total time (ms) |"  >> ${save_path}
 
 # 2. compile
 mkdir -p build

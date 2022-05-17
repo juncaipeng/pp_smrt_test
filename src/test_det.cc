@@ -431,14 +431,19 @@ int main(int argc, char *argv[]) {
     run_infer(predictor, args, yaml_cfg, &pre_time, &run_time);
   }
 
-  LOG(INFO) << "Avg preprocess time: " << pre_time.used_time() / args.run_iters << " ms";
-  LOG(INFO) << "Avg run time: " << run_time.used_time() / args.run_iters << " ms";
+  double avg_pre_time = pre_time.used_time() / args.run_iters;
+  double avg_run_time = run_time.used_time() / args.run_iters;
+  double avg_total_time = avg_pre_time + avg_run_time;
+  LOG(INFO) << "Avg preprocess time: " << avg_pre_time << " ms";
+  LOG(INFO) << "Avg run time: " << avg_run_time << " ms";
+  LOG(INFO) << "Avg total time: " << avg_total_time << " ms";
 
   std::size_t found = args.model_dir.find_last_of(OS_PATH_SEP);
   std::string model_name = args.model_dir.substr(found + 1);
   std::ofstream ofs(args.save_path, std::ios::out | std::ios::app);
-  ofs << "| " << model_name << " | " << pre_time.used_time() / args.run_iters
-      << " | " << run_time.used_time() / args.run_iters
+  ofs << "| " << model_name << " | " << avg_pre_time
+      << " | " << avg_run_time
+      << " | " << avg_total_time
       << " | " << std::endl;
   ofs.close();
 }
