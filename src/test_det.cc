@@ -336,13 +336,10 @@ std::shared_ptr<paddle_infer::Predictor> create_predictor(const Args& args, cons
 
 void run_infer(std::shared_ptr<paddle_infer::Predictor> predictor,
                const Args& args, const YamlConfig& yaml_cfg,
-               Time* pre_time=nullptr, Time* run_time=nullptr) {
+               DetInput& det_input, Time* pre_time=nullptr, Time* run_time=nullptr) {
   // Prepare data
   cv::Mat ori_img = read_image(args.img_path);
   cv::Mat img = ori_img.clone();
-
-  DetInput det_input;
-  det_input.batch_size = 1;
 
   if (pre_time != nullptr) {
     pre_time->start();
@@ -419,21 +416,25 @@ int main(int argc, char *argv[]) {
 
   LOG(INFO) << "-----Create predictor-----";
   auto predictor = create_predictor(args, yaml_cfg);
+  DetInput det_input;
+  det_input.batch_size = 1;
 
   LOG(INFO) << "-----Warmup-----";
   for (int i = 0; i < args.warmup_iters; i++) {
-    run_infer(predictor, args, yaml_cfg);
+    run_infer(predictor, args, yaml_cfg, det_input);
   }
 
   LOG(INFO) << "-----Run-----";
   Time pre_time, run_time;
   for (int i = 0; i < args.run_iters; i++) {
-    run_infer(predictor, args, yaml_cfg, &pre_time, &run_time);
+    run_infer(predictor, args, yaml_cfg, det_input, &pre_time, &run_time);
   }
 
   double avg_pre_time = pre_time.used_time() / args.run_iters;
   double avg_run_time = run_time.used_time() / args.run_iters;
   double avg_total_time = avg_pre_time + avg_run_time;
+
+  det_input.show();
   LOG(INFO) << "Avg preprocess time: " << avg_pre_time << " ms";
   LOG(INFO) << "Avg run time: " << avg_run_time << " ms";
   LOG(INFO) << "Avg total time: " << avg_total_time << " ms";
@@ -441,7 +442,9 @@ int main(int argc, char *argv[]) {
   std::size_t found = args.model_dir.find_last_of(OS_PATH_SEP);
   std::string model_name = args.model_dir.substr(found + 1);
   std::ofstream ofs(args.save_path, std::ios::out | std::ios::app);
-  ofs << "| " << model_name << " | " << avg_pre_time
+  ofs << "| " << model_name 
+      << " | " << det_input.in_net_shape[1] << "x" << det_input.in_net_shape[0]
+      << " | " << avg_pre_time
       << " | " << avg_run_time
       << " | " << avg_total_time
       << " | " << std::endl;
