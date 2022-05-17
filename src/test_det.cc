@@ -309,7 +309,8 @@ std::shared_ptr<paddle_infer::Predictor> create_predictor(const Args& args, cons
       bool use_dynamic_shape = args.use_trt_dynamic_shape || yaml_cfg.use_dynamic_shape;
       if (use_dynamic_shape) {
         LOG(INFO) << "Enable TRT dynamic shape";
-        if (args.dynamic_shape_path.empty() || !file_exists(args.dynamic_shape_path)) {
+        //if (args.dynamic_shape_path.empty() || !file_exists(args.dynamic_shape_path)) {
+        if (true) {
           LOG(INFO) << "Use manual dynamic shape";
           std::map<std::string, std::vector<int>> min_input_shape = {
               {"image", {1, 3, 128, 128}}};
@@ -408,11 +409,13 @@ int main(int argc, char *argv[]) {
   // Load yaml
   YamlConfig yaml_cfg = load_yaml(args.model_dir + OS_PATH_SEP + "infer_cfg.yml");
   yaml_cfg.show();
-
+  
+  /*
   if (args.device == "GPU" && args.use_trt && (args.use_trt_dynamic_shape || yaml_cfg.use_dynamic_shape) && args.use_trt_auto_tune) {
     LOG(INFO) << "-----Auto tune-----";
     auto_tune(args, yaml_cfg);
   }
+  */
 
   LOG(INFO) << "-----Create predictor-----";
   auto predictor = create_predictor(args, yaml_cfg);
