@@ -13,6 +13,10 @@ cuda_root="/usr/local/cuda/lib64"
 tensorrt_root="${work_path}/TensorRT-7.1.3.4/" # the root path of TensorRT lib
 opencv_root="/usr/local/opencv3"
 
+gpu_id=0
+gpu_name=""
+#export CUDA_VISIBLE_DEVICES=${gpu_id}
+
 img_name="det_1500.jpg"           # det_1500.jpg or "det_1024.jpg"
 model_dir='infer_models_det'      # the dir of det inference models
 device=GPU                        # run on GPU or CPU
@@ -25,9 +29,6 @@ warmup_iters=30
 run_iters=50
 save_path="res_det.txt"
 
-gpu_id=0
-gpu_name=""
-#export CUDA_VISIBLE_DEVICES=${gpu_id}
 
 if [ ! -f "${img_name}" ]; then
  wget https://paddle-smrt.bj.bcebos.com/data/demo_imgs/${img_name}

@@ -13,6 +13,10 @@ cuda_root="/usr/local/cuda/lib64"
 tensorrt_root="${work_path}/TensorRT-7.1.3.4/"  # the root path of TensorRT lib
 opencv_root="/usr/local/opencv3"
 
+gpu_id=0
+gpu_name=""
+#export CUDA_VISIBLE_DEVICES=${gpu_id}
+
 model_dir='infer_models_seg'    # the dir of seg inference models
 target_width=512                # the width of resized image, which is the input of inference model
 target_height=512               # the height of resized image
@@ -25,9 +29,6 @@ warmup_iters=30
 run_iters=50
 save_path="res_seg.txt"
 
-gpu_id=0
-gpu_name=""
-#export CUDA_VISIBLE_DEVICES=${gpu_id}
 
 if [ ! -f "cityscapes_demo.png" ]; then
   wget https://paddleseg.bj.bcebos.com/dygraph/demo/cityscapes_demo.png
