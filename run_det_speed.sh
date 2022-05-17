@@ -13,7 +13,7 @@ cuda_root="/usr/local/cuda/lib64"
 tensorrt_root="${work_path}/TensorRT-7.1.3.4/" # the root path of TensorRT lib
 opencv_root="/usr/local/opencv3"
 
-
+img_name="det_1500.jpg"           # det_1500.jpg or "det_1024.jpg"
 model_dir='infer_models_det'      # the dir of det inference models
 device=GPU                        # run on GPU or CPU
 use_trt=True                      # when device=GPU, whether to use trt
@@ -29,8 +29,8 @@ gpu_id=0
 gpu_name=""
 #export CUDA_VISIBLE_DEVICES=${gpu_id}
 
-if [ ! -f "det_img.jpg" ]; then
- wget https://paddledet.bj.bcebos.com/data/demo_imgs/det_img.jpg
+if [ ! -f "${img_name}" ]; then
+ wget https://paddle-smrt.bj.bcebos.com/data/demo_imgs/${img_name}
 fi
 
 echo "\n---Config Info---" >> ${save_path}
@@ -71,7 +71,7 @@ do
   echo "\n-----------------Test ${model}-----------------"
   ./build/test_det \
       --model_dir=${model} \
-      --img_path=./det_img.jpg \
+      --img_path=${img_name} \
       --device=${device} \
       --use_trt=${use_trt} \
       --trt_precision=${trt_precision} \
