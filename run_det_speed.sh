@@ -6,7 +6,6 @@ set -e
 WITH_GPU=ON
 USE_TENSORRT=ON
 WITH_MKL=ON
-DEMO_NAME=test_det
 
 work_path=$(dirname $(readlink -f $0))
 paddle_root="${work_path}/paddle_inference"       # the root path of Paddle Inference lib
@@ -48,12 +47,11 @@ echo "run_iters: ${run_iters}" >> ${save_path}
 echo "| model | preprocess time (ms) | run time (ms) |"  >> ${save_path}
 
 # 2. compile
-mkdir -p build_det
-cd build_det
+mkdir -p build
+cd build
 #rm -rf *
 
 cmake .. \
-  -DDEMO_NAME=${DEMO_NAME} \
   -DWITH_MKL=${WITH_MKL} \
   -DWITH_GPU=${WITH_GPU} \
   -DUSE_TENSORRT=${USE_TENSORRT} \
@@ -71,7 +69,7 @@ cd ..
 for model in ${model_dir}/*
 do
   echo "\n-----------------Test ${model}-----------------"
-  ./build_det/test_det \
+  ./build/test_det \
       --model_dir=${model} \
       --img_path=./det_img.jpg \
       --device=${device} \

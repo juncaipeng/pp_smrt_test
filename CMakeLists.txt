@@ -7,16 +7,12 @@ option(WITH_STATIC_LIB "Compile demo with static/shared library, default use sta
 option(USE_TENSORRT "Compile demo with TensorRT."   OFF)
 option(WITH_ROCM "Compile demo with rocm." OFF)
 
-SET(DEMO_NAME "" CACHE STRING "The demo name")
 SET(PADDLE_LIB "" CACHE PATH "Location of paddleinference libraries")
 SET(CUDA_LIB "" CACHE PATH "Location of CUDA libraries")
 SET(TENSORRT_ROOT "" CACHE PATH "The root directory of TensorRT library")
 SET(OPENCV_ROOT "" CACHE PATH "The root directory of Opencv library")
 
 # check
-if(DEMO_NAME STREQUAL "")
-  message(FATAL_ERROR "please set DEMO_NAME with -DDEMO_NAME=xxx")
-endif()
 if(PADDLE_LIB STREQUAL "")
   message(FATAL_ERROR "please set PADDLE_LIB with -DPADDLE_LIB=/path/paddle/lib")
 endif()
@@ -220,6 +216,12 @@ endif()
 
 include_directories(src)
 
+set(DEMO_NAME "test_seg")
+add_executable(${DEMO_NAME} src/${DEMO_NAME}.cc src/common.cc)
+ADD_DEPENDENCIES(${DEMO_NAME} ext-yaml-cpp)
+target_link_libraries(${DEMO_NAME} ${DEPS})
+
+set(DEMO_NAME "test_det")
 add_executable(${DEMO_NAME} src/${DEMO_NAME}.cc src/common.cc)
 ADD_DEPENDENCIES(${DEMO_NAME} ext-yaml-cpp)
 target_link_libraries(${DEMO_NAME} ${DEPS})
