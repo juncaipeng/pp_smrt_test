@@ -250,7 +250,7 @@ void auto_tune(const Args& args, const YamlConfig& yaml_cfg) {
       input_shape->CopyFromCpu(det_input.img_shape.data());
     } else if (name == "image") {
       auto input_img = predictor->GetInputHandle(name);
-      input_img->Reshape(std::vector<int>{det_input.batch_size, 3, det_input.in_net_shape[0], det_input.in_net_shape[1]});
+      input_img->Reshape(std::vector<int>{det_input.batch_size, 3, (int)det_input.in_net_shape[0], (int)det_input.in_net_shape[1]});
       input_img->CopyFromCpu(det_input.img_data.data());
     } else if (name == "scale_factor") {
       auto input_scale = predictor->GetInputHandle(name);
@@ -365,7 +365,7 @@ void run_infer(std::shared_ptr<paddle_infer::Predictor> predictor,
       input_shape->CopyFromCpu(det_input.img_shape.data());
     } else if (name == "image") {
       auto input_img = predictor->GetInputHandle(name);
-      input_img->Reshape(std::vector<int>{det_input.batch_size, 3, det_input.in_net_shape[0], det_input.in_net_shape[1]});
+      input_img->Reshape(std::vector<int>{det_input.batch_size, 3, (int)det_input.in_net_shape[0], (int)det_input.in_net_shape[1]});
       input_img->CopyFromCpu(det_input.img_data.data());
     } else if (name == "scale_factor") {
       auto input_scale = predictor->GetInputHandle(name);
