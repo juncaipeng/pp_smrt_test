@@ -8,6 +8,8 @@
 
 在Nvidia GPU上测试模型，必须安装必CUDA、cudnn，此外需要下载TensorRT库文件。
 
+推荐使用Docker进行环境配置，比如使用Docker镜像：registry.baidubce.com/paddlepaddle/paddle:2.1.2-gpu-cuda10.2-cudnn7
+
 此处提供两个版本的CUDA、cudnn、TensorRT文件下载。
 
 ```
@@ -25,7 +27,7 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/download/TensorRT-7.1.3.4/lib
 
 在Nvidia GPU上测试模型，进入[C++预测库](https://paddleinference.paddlepaddle.org.cn/user_guides/download_lib.html)下载对应CUDA、Cudnn、TRT、GCC版本的PaddleInference库。
 
-> 不同C++预测库可以根据名字进行区分。请根据机器的操作系统、CUDA版本、cudnn版本、使用MKLDNN或者OpenBlas、是否使用TenorRT等信息，选择准确版本。（建议选择版本>=2.3rc的预测库）
+不同C++预测库可以根据名字进行区分。请根据机器的操作系统、CUDA版本、cudnn版本、使用MKLDNN或者OpenBlas、是否使用TenorRT等信息，选择准确版本。（建议选择2.3版本的预测库）
 
 下载`paddle_inference.tgz`压缩文件，解压到本示例的根目录下。
 
@@ -46,38 +48,6 @@ make -j
 make install
 
 cd ../..
-```
-
-本示例使用Yaml读取配置文件信息。
-执行如下命令下载、编译、安装Yaml。
-
-```
-wget https://github.com/jbeder/yaml-cpp/archive/refs/tags/yaml-cpp-0.7.0.zip
-unzip yaml-cpp-0.7.0.zip
-mkdir -p yaml-cpp-yaml-cpp-0.7.0/build
-cd yaml-cpp-yaml-cpp-0.7.0/build
-cmake -DYAML_BUILD_SHARED_LIBS=ON ..
-make -j
-make install
-```
-
-本示例使用Gflags和Glog，执行如下命令安装。
-```
-git clone https://github.com/gflags/gflags.git
-mkdir -p gflags/build
-cd gflags/build
-cmake ..
-make -j
-make install
-```
-
-```
-git clone https://github.com/google/glog
-mkdir -p glog/build
-cd glog/build
-cmake ..
-make -j
-make install
 ```
 
 ## 准备模型
@@ -106,8 +76,10 @@ infer_models_det
 
 打开`run_seg_speed.sh`文件，根据实际情况，设置如下变量，其他变量也可以自行修改。
 * paddle_root为PaddleInference库路径
+* cuda_root为CUDA库路径
 * tensorrt_root为TensorRT库路径
-* model_dir为分割模型预测模型的保存目录
+* opencv_root为OpenCV库路径
+* model_dir为分割模型预测模型的保存目录，该目录下保存了多个分割模型，进行批量测试
 * target_width和target_height为输入图像resize后的宽高
 * save_path为结果信息的保存文件
 
@@ -121,8 +93,11 @@ infer_models_det
 
 打开`run_det_speed.sh`文件，根据实际情况，设置如下变量，其他变量也可以自行修改。
 * paddle_root为PaddleInference库路径
+* cuda_root为CUDA库路径
 * tensorrt_root为TensorRT库路径
+* opencv_root为OpenCV库路径
 * model_dir为检测模型预测模型的保存目录
+* img_name为测试使用的输入图像名称
 * save_path为结果信息的保存文件
 
 `run_det_speed.sh`文件，默认参数是使用GPU、开启TRT、使用Auto tune收集shape，然后进行预测。
